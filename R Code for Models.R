@@ -310,45 +310,6 @@ dHuangCPM = function(t,Temp,muopt,Topt,Tmin,Tmax,Y0,A,m,Ymax){
   }
   return(Zout)
 }
-###Logistic - Cardinal parameter model
-dLogisticModel = function(t, Y, mu, Ymax){
-  dY = mu*(1-exp(Y-Ymax))
-  return(dY)
-}
-dLogisticCPMNLS = function(t,ts,Temp,muopt,Topt,Tmin,Tmax, Y0, Ymax){
-  len_t=length(t)-1
-  LenY=length(ts)
-  mu = dCPM(Temp, muopt,Topt,Tmin,Tmax)
-  Zout[1] = Y0
-  for(i in 1:len_t){
-    k1 = dNoLagModel(t[i], Zout[i], mu[i],  Ymax)
-    k2 = dNoLagModel(t[i]+0.5*dt, Zout[i]+0.5*dt*k1, mu[i], Ymax)
-    k3 = dNoLagModel(t[i]+0.5*dt, Zout[i]+0.5*dt*k2, mu[i], Ymax)
-    k4 = dNoLagModel(t[i]+dt, Zout[i]+dt*k3, mu[i], Ymax)
-    Zout[i+1] = Zout[i] +dt*(k1+2*k2+2*k3+k4)/6
-  }
-  for(i in 1:length(t)){
-    for(j in 1:LenY){
-      if(t[i]==ts[j]){
-        Yout[j]=Zout[i]
-      }
-    }
-  }
-  return(Yout)
-}
-dLogisticCPM = function(t,Temp,muopt,Topt,Tmin,Tmax, Y0, Ymax){
-  len_t=length(t)-1
-  mu = dCPM(Temp, muopt,Topt,Tmin,Tmax)
-  Zout[1] = Y0
-  for(i in 1:len_t){
-    k1 = dNoLagModel(t[i], Zout[i], mu[i],  Ymax)
-    k2 = dNoLagModel(t[i]+0.5*dt, Zout[i]+0.5*dt*k1, mu[i], Ymax)
-    k3 = dNoLagModel(t[i]+0.5*dt, Zout[i]+0.5*dt*k2, mu[i], Ymax)
-    k4 = dNoLagModel(t[i]+dt, Zout[i]+dt*k3, mu[i], Ymax)
-    Zout[i+1] = Zout[i] +dt*(k1+2*k2+2*k3+k4)/6
-  }
-  return(Zout)
-}
 
 
 ##Non-isothermal inactivation model (referenced to Tabel 3)
